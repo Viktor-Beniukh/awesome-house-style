@@ -28,9 +28,9 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
     def image_show(self, obj):
-        if obj.image:
+        if obj.image_product:
             return mark_safe(
-                "<img src='{}' width='60' />".format(obj.image.url)
+                "<img src='{}' width='60' />".format(obj.image_product.url)
             )
         return "None"
 
