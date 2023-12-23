@@ -6,4 +6,4 @@ def index(request):
         "title": "House Style - Home Page",
         "content": "Furniture store HouseStyle",
     }
-    return render(request=request, template_name="index.html", context=context)
+    return render(request=request, template_name="main/index.html", context=context)
