@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "awesome-house-style"
+version = "0.1.0"
+description = "This is my awesome house style project written on Django"
+authors = ["Viktor Beniukh <superbigbenjamin@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
