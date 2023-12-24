@@ -14,11 +14,14 @@
         Filters
       </button>
 
-      <form action="{% url "catalog:index" slug_url %}" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+      <form action="{% if request.GET.q %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{% endif %}"
+            method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
         <div class="form-check text-white mx-3">
           <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault"
                  value="on" {% if request.GET.on_sale == "on" %}checked{% endif %}>
-{#          <input type="hidden" name="q" value="request.GET.q">#}
+          {% if request.GET.q %}
+            <input type="hidden" name="q" value="{{ request.GET.q }}">
+          {% endif %}
           <label class="form-check-label" for="flexCheckDefault">
             Goods for sale
           </label>
@@ -48,6 +51,14 @@
         <button type="submit" class="btn btn-primary mx-3 mt-3">Apply</button>
       </form>
     </div>
+
+    {% if request.GET.q %}
+      <h3 class="mt-4">Search results for "{{ request.GET.q }}"</h3>
+      {% if not goods %}
+          <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}">
+          <h2 class="mt-4">Nothing found on request</h2>
+      {% endif %}
+    {% endif %}
 
     {% for product in goods %}
       <!-- Product card -->
