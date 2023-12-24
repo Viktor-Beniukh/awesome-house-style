@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-
-{% block css-footer %}
-  <link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
-{% endblock %}
+{% load goods_tags %}
 
 {% block title %}{{ title }}{% endblock %}
-
 
 {% block content %}
   <!-- Content on page -->
@@ -91,22 +87,32 @@
     {% endfor %}
   </div>
 
-  <!-- Pagination -->
-  <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center my-4">
-      <div class="custom-shadow d-flex">
-        <li class="page-item disabled">
-          <a class="page-link">Previous</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
-        </li>
-      </div>
-    </ul>
-  </nav>
+  {% if goods %}
+    <!-- Pagination -->
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center my-4">
+      {% if goods.has_other_pages %}
+        <div class="custom-shadow d-flex">
+          <li class="page-item {% if not goods.has_previous %}disabled{% endif %}">
+            <a class="page-link" href="{% if goods.has_previous %}?{% change_params page=goods.previous_page_number %}{% else %}#{% endif %}">Previous</a>
+          </li>
+
+          {% for page in goods.paginator.page_range %}
+            {% if page >= goods.number|add:-2 and page <= goods.number|add:2 %}
+              <li class="page-item {% if goods.number == page %} active {% endif %}">
+                <a class="page-link" href="?{% change_params page=page %}">{{ page }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          <li class="page-item {% if not goods.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{% if goods.has_next %}?{% change_params page=goods.next_page_number %}{% else %}#{% endif %}">Next</a>
+          </li>
+        </div>
+      {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 
 {% endblock %}
 
