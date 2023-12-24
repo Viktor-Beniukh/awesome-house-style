@@ -43,8 +43,17 @@ class Product(models.Model):
     )
 
     class Meta:
-        ordering = ("name",)
+        ordering = ("id",)
         index_together = (("id", "slug"),)
 
     def __str__(self):
         return self.name
+
+    def display_id(self):
+        return f"{self.id:05}"
+
+    def sell_price(self):
+        if self.discount:
+            return round(self.price - self.price * self.discount / 100, 2)
+
+        return self.price
