@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
 
     "debug_toolbar",
+    "phonenumber_field",
 
     "main",
     "goods",
