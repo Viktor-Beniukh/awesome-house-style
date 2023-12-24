@@ -14,29 +14,33 @@
         Filters
       </button>
 
-      <form action="" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+      <form action="{% url "catalog:index" slug_url %}" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
         <div class="form-check text-white mx-3">
-          <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault" value="on">
-          <input type="hidden" name="q" value="request.GET.q">
+          <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault"
+                 value="on" {% if request.GET.on_sale == "on" %}checked{% endif %}>
+{#          <input type="hidden" name="q" value="request.GET.q">#}
           <label class="form-check-label" for="flexCheckDefault">
             Goods for sale
           </label>
         </div>
         <p class="text-white mx-3 mt-3">Sort:</p>
         <div class="form-check text-white mx-3">
-          <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default" checked>
+          <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default"
+                 {% if not request.GET.order_by or request.GET.order_by == "default" %}checked{% endif %}>
           <label class="form-check-label" for="flexRadioDefault1">
             By default
           </label>
         </div>
         <div class="form-check text-white mx-3">
-          <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="price">
+          <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="price"
+                 {% if request.GET.order_by == "price" %}checked{% endif %}>
           <label class="form-check-label" for="flexRadioDefault2">
             From cheap to expensive
           </label>
         </div>
         <div class="form-check text-white mx-3">
-          <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="-price">
+          <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="-price"
+                 {% if request.GET.order_by == "-price" %}checked{% endif %}>
           <label class="form-check-label" for="flexRadioDefault3">
             From expensive to cheap
           </label>
