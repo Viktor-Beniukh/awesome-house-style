@@ -16,11 +16,11 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "slug",
-        "image_show",
         "price",
         "quantity",
         "created_at",
-        "updated_at"
+        "updated_at",
+        "image_show",
     )
     list_filter = ("created_at", "updated_at")
     list_editable = ("price",)
@@ -30,7 +30,7 @@ class ProductAdmin(admin.ModelAdmin):
     def image_show(self, obj):
         if obj.image_product:
             return mark_safe(
-                "<img src='{}' width='60' />".format(obj.image_product.url)
+                "<img src='{}' width='50' />".format(obj.image_product.url)
             )
         return "None"
 
