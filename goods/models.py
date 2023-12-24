@@ -17,7 +17,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True)
 
     class Meta:
-        ordering = ("name",)
+        ordering = ("id",)
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         index_together = (("id", "slug"),)
