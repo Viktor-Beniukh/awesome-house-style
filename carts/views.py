@@ -25,5 +25,7 @@ def cart_change_view(request, product_slug: str):
     pass
 
 
-def cart_remove_view(request, product_slug: str):
-    pass
+def cart_remove_view(request, cart_id: int):
+    cart = Cart.objects.get(id=cart_id)
+    cart.delete()
+    return redirect(request.META["HTTP_REFERER"])
