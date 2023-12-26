@@ -29,6 +29,7 @@ class User(AbstractUser):
         using=None,
         update_fields=None
     ):
+        super().save()
 
         if self.image_user:
             img = Image.open(self.image_user.path)
@@ -37,5 +38,3 @@ class User(AbstractUser):
                 output_size = (300, 300)
                 img.thumbnail(output_size)
                 img.save(self.image_user.path)
-
-        super().save()
