@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_list_or_404
+from django.shortcuts import render
 
 from goods.models import Product
 from goods.utils import q_search
@@ -11,12 +11,13 @@ def catalog_view(request, category_slug: str = None):
     order_by = request.GET.get("order_by", None)
     query = request.GET.get("q", None)
 
-    if category_slug == "all-goods":
-        goods = Product.objects.all()
-    elif query:
+    goods = Product.objects.all()
+
+    if category_slug and category_slug != "all-goods":
+        goods = goods.filter(category__slug=category_slug)
+
+    if query:
         goods = q_search(query)
-    else:
-        goods = get_list_or_404(Product.objects.filter(category__slug=category_slug))
 
     if on_sale:
         goods = goods.filter(discount__gt=0)
