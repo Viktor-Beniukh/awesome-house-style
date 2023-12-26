@@ -29,11 +29,13 @@ class User(AbstractUser):
         using=None,
         update_fields=None
     ):
+
+        if self.image_user:
+            img = Image.open(self.image_user.path)
+
+            if img.height > 300 or img.width > 300:
+                output_size = (300, 300)
+                img.thumbnail(output_size)
+                img.save(self.image_user.path)
+
         super().save()
-
-        img = Image.open(self.image_user.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.image_user.path)
