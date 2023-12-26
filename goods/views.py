@@ -43,6 +43,7 @@ def product_view(request, product_slug: str):
     product = Product.objects.get(slug=product_slug)
 
     context = {
+        "title": f"House Style - {product.name}",
         "product": product
     }
 
