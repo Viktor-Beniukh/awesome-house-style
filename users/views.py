@@ -73,6 +73,10 @@ def profile_view(request):
     return render(request=request, template_name="users/profile.html", context=context)
 
 
+def users_cart_view(request):
+    return render(request, "users/users_cart.html")
+
+
 @login_required
 def logout_view(request):
     messages.success(request, f"{request.user.username}, You left your account")
