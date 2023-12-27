@@ -17,8 +17,11 @@ class UserAdmin(UserAdmin):
                 "Additional info",
                 {
                     "fields": (
-                        "image_user",
+                        "first_name",
+                        "last_name",
+                        "email",
                         "phone_number",
+                        "image_user",
                     )
                 },
             ),
