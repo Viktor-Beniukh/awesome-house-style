@@ -2,6 +2,7 @@
 {% load static %}
 {% load goods_tags %}
 
+
 {% block title %}{{ title }}{% endblock %}
 
 {% block modal_cart %}
@@ -123,6 +124,7 @@
       </div>
       <!-- Product card -->
     {% endfor %}
+
   </div>
 
   {% if goods %}
@@ -131,17 +133,14 @@
       {% include "goods/includes/pagination.html" %}
     {% endblock %}
   {% endif %}
-
+<br><br><br>
 {% endblock %}
 
+
 {% block footer %}
-  <footer class="py-4 bg-dark">
+  <footer class="py-4 bg-dark fixed-bottom">
     <div class="container">
       <p class="m-0 text-center text-white">Copyright &copy; Home Awesome House Style 2023</p>
     </div>
   </footer>
 {% endblock %}
-
-
-
-
