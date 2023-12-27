@@ -15,17 +15,26 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "slug",
         "price",
+        "discount",
         "quantity",
         "created_at",
         "updated_at",
         "image_show",
     )
-    list_filter = ("created_at", "updated_at")
-    list_editable = ("price",)
+    list_filter = ("discount", "category")
+    list_editable = ("price", "discount")
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ("name",)
+    fields = (
+        "name",
+        "category",
+        "slug",
+        "description",
+        "image_product",
+        ("price", "discount"),
+        "quantity"
+    )
 
     def image_show(self, obj):
         if obj.image_product:
