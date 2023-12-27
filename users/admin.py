@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 
+from carts.admin import CartTabAdmin
 from users.models import User
 
 
@@ -27,6 +28,8 @@ class UserAdmin(UserAdmin):
             ),
         )
     )
+
+    inlines = [CartTabAdmin, ]
 
     def image_show(self, obj):
         if obj.image_user:
