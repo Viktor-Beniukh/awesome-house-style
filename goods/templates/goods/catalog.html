@@ -76,7 +76,7 @@
           {% endif %}
 
           <div class="card-body">
-            <a href="{% url 'catalog:product' product.slug %}">
+            <a href="{{ product.get_absolute_url }}">
               <p class="card-title">
                 {{ product.name }}
 {#                {% autoescape off %}#}
