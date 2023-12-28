@@ -111,6 +111,7 @@ def logout_view(request):
     return redirect(reverse("main:index"))
 
 
+@login_required
 def change_password_view(request, pk):
     user = request.user
 
@@ -134,6 +135,7 @@ def change_password_view(request, pk):
     return render(request=request, template_name="users/change_password.html", context=context)
 
 
+@login_required
 def password_success_view(request):
 
     context = {
