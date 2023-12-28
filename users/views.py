@@ -144,3 +144,43 @@ def password_success_view(request):
     return render(
         request=request, template_name="users/password_change_done.html", context=context
     )
+
+
+def reset_password_view(request):
+    context = {
+        "title": "House Style - Reset Password"
+    }
+
+    return render(
+        request=request, template_name="users/password_reset_form.html", context=context
+    )
+
+
+def reset_password_done_view(request):
+    context = {
+        "title": "House Style - Reset Password Done"
+    }
+
+    return render(
+        request=request, template_name="users/password_reset_done.html", context=context
+    )
+
+
+def reset_password_confirm_view(request):
+    context = {
+        "title": "House Style - Password Confirm"
+    }
+
+    return render(
+        request=request, template_name="users/password_reset_confirm.html", context=context
+    )
+
+
+def reset_password_complete_view(request):
+    context = {
+        "title": "House Style - Password Complete"
+    }
+
+    return render(
+        request=request, template_name="users/password_reset_complete.html", context=context
+    )
