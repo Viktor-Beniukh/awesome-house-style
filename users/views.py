@@ -1,10 +1,12 @@
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from carts.models import Cart
+from orders.models import Order, OrderItem
 from users.forms import UserLoginForm, UserProfileForm, UserRegisterForm
 
 
@@ -77,9 +79,17 @@ def profile_view(request):
     else:
         form = UserProfileForm(instance=request.user)
 
+    orders = Order.objects.filter(user=request.user).prefetch_related(
+        Prefetch(
+            "order_items",
+            queryset=OrderItem.objects.select_related("product"),
+        )
+    ).order_by("-id")
+
     context = {
         "title": "House Style - Personal Account",
         "form": form,
+        "orders": orders,
     }
     return render(request=request, template_name="users/profile.html", context=context)
 
