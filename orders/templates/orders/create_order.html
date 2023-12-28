@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+{% load carts_tags %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
+    <div class="container">
+      <h3 class="text-center mb-4">Selected items</h3>
+      <div class="container" id="cart-items-container">
+        <!-- Cart marking -->
+        {% user_carts request as carts %}
+
+        {% include "carts/includes/included_cart.html" %}
+        <!-- End cart marking -->
+      </div>
+    </div>
+    <!-- Order detail -->
+    <div class="container">
+      <h3 class="text-center">Order detail</h3>
+      <div class="card mb-3">
+        <div class="card-body">
+          <form action="{% url "orders:create_order" %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="id_first_name" class="form-label">First Name*:</label>
+                <input type="text" class="form-control" id="id_first_name"
+                       value="{% if form.first_name.value %}{{ form.first_name.value }}{% endif %}"
+                       name="first_name" required>
+                 {% if form.first_name.errors %}
+                   <div class="alert alert-danger alert-dismissible fade show">{{form.first_name.errors}}</div>
+                 {% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_last_name" class="form-label">Last Name*:</label>
+                <input type="text" class="form-control" id="id_last_name" name="last_name"
+                       value="{% if form.last_name.value %}{{ form.last_name.value }}{% endif %}" required>
+                {% if form.last_name.errors %}
+                  <div class="alert alert-danger alert-dismissible fade show">{{form.last_name.errors}}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_email" class="form-label">Email Address*:</label>
+                <input type="email" class="form-control" id="id_email" name="email"
+                       value="{% if form.email.value %}{{ form.email.value }}{% endif %}" required>
+                {% if form.email.errors %}
+                  <div class="alert alert-danger alert-dismissible fade show">{{form.email.errors}}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="id_phone_number" class="form-label">Phone number*:</label>
+                <input type="text" class="form-control" id="id_phone_number" name="phone_number"
+                       value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"
+                       placeholder="In formate: XXX-XXX-XX-XX">
+                {% if form.phone_number.errors %}
+                  <div class="alert alert-danger alert-dismissible fade show">{{form.phone_number.errors}}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-12 mb-3">
+                <label for="delivery" class="form-label">Delivery option: </label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="requires_delivery"
+                         id="id_requires_delivery" value="1" checked>
+                  <label class="form-check-label" for="id_requires_delivery">Need delivery</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="requires_delivery"
+                         id="id_requires_delivery" value="0">
+                  <label class="form-check-label" for="id_requires_delivery">Self-delivery</label>
+                </div>
+              </div>
+
+              <div class="mb-3" id="deliveryAddressField">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="id_shipping_address" class="form-label">Shipping address*:</label>
+                    <input type="text" class="form-control" id="id_shipping_address" name="shipping_address"
+                         value="{% if form.shipping_address.value %}{{ form.shipping_address.value }}{% endif %}">
+                    {% if form.shipping_address.errors %}
+                      <div class="alert alert-danger alert-dismissible fade show">{{form.shipping_address.errors}}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="id_city" class="form-label">City*:</label>
+                    <input type="text" class="form-control" id="id_city" name="city"
+                         value="{% if form.city.value %}{{ form.city.value }}{% endif %}">
+                    {% if form.city.errors %}
+                      <div class="alert alert-danger alert-dismissible fade show">{{form.city.errors}}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="id_country" class="form-label">Country*:</label>
+                    <input type="text" class="form-control" id="id_country" name="country"
+                         value="{% if form.country.value %}{{ form.country.value }}{% endif %}">
+                    {% if form.country.errors %}
+                      <div class="alert alert-danger alert-dismissible fade show">{{form.country.errors}}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="id_zipcode" class="form-label">Zipcode*:</label>
+                    <input type="number" class="form-control" id="id_zipcode" name="zipcode"
+                         value="{% if form.zipcode.value %}{{ form.zipcode.value }}{% endif %}">
+                    {% if form.zipcode.errors %}
+                      <div class="alert alert-danger alert-dismissible fade show">{{form.zipcode.errors}}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+{#                <label for="id_delivery_address" class="form-label">Shipping address*:</label>#}
+{#                <textarea class="form-control" id="id_delivery_address"#}
+{#                          value="{% if form.shipping_address.value %}{{ form.shipping_address.value }}{% endif %}"#}
+{#                          name="shipping_address" rows="2"></textarea>#}
+{#                {% if form.shipping_address.errors %}#}
+{#                  <div class="alert alert-danger alert-dismissible fade show">{{form.shipping_address.errors}}</div>#}
+{#                {% endif %}#}
+              </div>
+
+              <div class="col-md-12 mb-3">
+                <label class="form-label">Payment option: </label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment_on_get"
+                         id="id_payment_on_get" value="0" checked>
+                  <label class="form-check-label" for="id_payment_on_get">Payment by card</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment_on_get"
+                         id="id_payment_on_get" value="1">
+                  <label class="form-check-label" for="id_payment_on_get">Cash/card on receipt</label>
+                  {% if form.payment_on_get.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show">{{form.payment_on_get.errors}}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-dark">Place order</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
