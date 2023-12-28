@@ -5,6 +5,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+
   <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
     <div class="container">
       <h3 class="text-center mb-4">Selected items</h3>
@@ -21,6 +22,7 @@
       <h3 class="text-center">Order detail</h3>
       <div class="card mb-3">
         <div class="card-body">
+
           <form action="{% url "orders:create_order" %}" method="post">
             {% csrf_token %}
             <div class="row">
@@ -107,14 +109,6 @@
                     {% endif %}
                   </div>
                 </div>
-
-{#                <label for="id_delivery_address" class="form-label">Shipping address*:</label>#}
-{#                <textarea class="form-control" id="id_delivery_address"#}
-{#                          value="{% if form.shipping_address.value %}{{ form.shipping_address.value }}{% endif %}"#}
-{#                          name="shipping_address" rows="2"></textarea>#}
-{#                {% if form.shipping_address.errors %}#}
-{#                  <div class="alert alert-danger alert-dismissible fade show">{{form.shipping_address.errors}}</div>#}
-{#                {% endif %}#}
               </div>
 
               <div class="col-md-12 mb-3">
@@ -133,11 +127,14 @@
                   {% endif %}
                 </div>
               </div>
+
             </div>
             <button type="submit" class="btn btn-dark">Place order</button>
           </form>
+
         </div>
       </div>
     </div>
   </div>
+
 {% endblock %}
