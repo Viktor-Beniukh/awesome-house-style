@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.forms import ValidationError
+from django.core.exceptions import ValidationError
+
 from django.db import transaction
 from django.shortcuts import render, redirect
 
