@@ -95,7 +95,10 @@ def profile_view(request):
 
 
 def users_cart_view(request):
-    return render(request, "users/users_cart.html")
+    context = {
+        "title": "House Style - User Cart",
+    }
+    return render(request=request, template_name="users/users_cart.html", context=context)
 
 
 @login_required
