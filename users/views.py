@@ -1,12 +1,14 @@
 from django.contrib import auth, messages
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.tokens import default_token_generator
 
 from django.db.models import Prefetch
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils.http import urlsafe_base64_decode
 
 from carts.models import Cart
 from orders.models import Order, OrderItem
@@ -147,6 +149,17 @@ def password_success_view(request):
 
 
 def reset_password_view(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(
+                request=request,
+                email_template_name="users/password_reset_email.html",
+            )
+
+            messages.success(request, "Message sent successfully.")
+            return redirect(reverse("user:password_reset_done"))
+
     context = {
         "title": "House Style - Reset Password"
     }
@@ -166,9 +179,32 @@ def reset_password_done_view(request):
     )
 
 
-def reset_password_confirm_view(request):
+def reset_password_confirm_view(request, uidb64, token):
+    user_id = urlsafe_base64_decode(uidb64).decode("utf-8")
+    user = get_user_model().objects.get(pk=user_id)
+
+    if default_token_generator.check_token(user, token):
+        validlink = True
+
+        if request.method == "POST":
+            form = SetPasswordForm(data=request.POST, user=user)
+            if form.is_valid():
+                form.save()
+
+                messages.success(request, "Password reset successfully.")
+                return redirect(reverse("user:password_reset_complete"))
+        else:
+            form = SetPasswordForm(user=user)
+    else:
+        validlink = False
+        form = None
+
     context = {
-        "title": "House Style - Password Confirm"
+        "title": "House Style - Password Confirm",
+        "validlink": validlink,
+        "form": form,
+        "uid": uidb64,
+        "token": token,
     }
 
     return render(
