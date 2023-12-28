@@ -132,7 +132,7 @@ def change_password_view(request, pk):
         "user": user
     }
 
-    return render(request=request, template_name="users/change_password.html", context=context)
+    return render(request=request, template_name="users/password_change_form.html", context=context)
 
 
 @login_required
