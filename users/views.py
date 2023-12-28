@@ -1,7 +1,10 @@
 from django.contrib import auth, messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+
 from django.db.models import Prefetch
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -106,3 +109,36 @@ def logout_view(request):
     messages.success(request, f"{request.user.username}, You left your account")
     auth.logout(request)
     return redirect(reverse("main:index"))
+
+
+def change_password_view(request, pk):
+    user = request.user
+
+    if request.method == "POST":
+        form = PasswordChangeForm(user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully.")
+
+            return redirect(reverse("user:password-success"))
+    else:
+        form = PasswordChangeForm(user)
+
+    context = {
+        "title": "House Style - Change Password",
+        "form": form,
+        "user": user
+    }
+
+    return render(request=request, template_name="users/change_password.html", context=context)
+
+
+def password_success_view(request):
+
+    context = {
+        "title": "House Style - Changed Password",
+    }
+    return render(
+        request=request, template_name="users/password_change_done.html", context=context
+    )
