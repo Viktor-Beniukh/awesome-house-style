@@ -1,6 +1,10 @@
+from django.contrib import messages
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 
+from goods.forms import CategoryForm
 from goods.models import Product
 from goods.utils import q_search
 
@@ -50,3 +54,20 @@ def product_view(request, product_slug: str):
     return render(
         request=request, template_name="goods/product.html", context=context
     )
+
+
+def category_create_view(request):
+    if request.method == "POST":
+        form = CategoryForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Category successfully created")
+            return HttpResponseRedirect(reverse("main:index"))
+    else:
+        form = CategoryForm()
+
+    context = {
+        "title": "House Style - Create Category",
+        "form": form
+    }
+    return render(request=request, template_name="goods/category_create.html", context=context)
