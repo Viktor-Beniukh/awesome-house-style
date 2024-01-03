@@ -23,6 +23,11 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
         index_together = (("id", "slug"),)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -49,6 +54,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("catalog:product", kwargs={"product_slug": self.slug})
