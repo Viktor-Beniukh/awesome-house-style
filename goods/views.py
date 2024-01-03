@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -56,18 +57,29 @@ def product_view(request, product_slug: str):
     )
 
 
-def category_create_view(request):
-    if request.method == "POST":
-        form = CategoryForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Category successfully created")
-            return HttpResponseRedirect(reverse("main:index"))
-    else:
-        form = CategoryForm()
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
 
-    context = {
-        "title": "House Style - Create Category",
-        "form": form
-    }
-    return render(request=request, template_name="goods/category_create.html", context=context)
+
+@login_required
+def category_create_view(request):
+    if is_admin(request.user):
+        if request.method == "POST":
+            form = CategoryForm(data=request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Category successfully created")
+                return HttpResponseRedirect(reverse("main:index"))
+        else:
+            form = CategoryForm()
+
+        context = {
+            "title": "House Style - Create Category",
+            "form": form
+        }
+        return render(
+            request=request, template_name="goods/category_create.html", context=context
+        )
+    else:
+        messages.warning(request, "You do not have permission to create categories.")
+        return HttpResponseRedirect(reverse("main:index"))
