@@ -5,22 +5,15 @@ from orders.models import Order, OrderItem
 
 class OrderItemTabulareAdmin(admin.TabularInline):
     model = OrderItem
-    fields = "product", "name", "price", "quantity"
-    search_fields = (
-        "product",
-        "name",
-    )
+    fields = ("product", "name", "price", "quantity")
+    search_fields = ("product", "name",)
     extra = 0
 
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = "order", "product", "name", "price", "quantity"
-    search_fields = (
-        "order",
-        "product",
-        "name",
-    )
+    list_display = ("order", "product", "name", "price", "quantity")
+    search_fields = ("order", "product", "name",)
 
 
 class OrderTabulareAdmin(admin.TabularInline):
@@ -53,6 +46,11 @@ class OrderAdmin(admin.ModelAdmin):
         "payment_on_get",
         "is_paid",
         "created_at",
+    )
+    list_editable = (
+        "status_order",
+        "is_paid",
+        "payment_on_get"
     )
 
     search_fields = (

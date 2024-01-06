@@ -23,7 +23,7 @@ class ProductAdmin(admin.ModelAdmin):
         "image_show",
     )
     list_filter = ("discount", "category")
-    list_editable = ("price", "discount")
+    list_editable = ("price", "discount", "quantity")
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ("name",)
     fields = (
