@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from goods.forms import CategoryForm
+from goods.forms import CategoryForm, ProductForm
 from goods.models import Product
 from goods.utils import q_search
 
@@ -82,4 +82,28 @@ def category_create_view(request):
         )
     else:
         messages.warning(request, "You do not have permission to create categories.")
+        return HttpResponseRedirect(reverse("main:index"))
+
+
+@login_required
+def product_create_view(request):
+    if is_admin(request.user):
+        if request.method == "POST":
+            form = ProductForm(data=request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Product successfully created")
+                return HttpResponseRedirect(reverse("main:index"))
+        else:
+            form = ProductForm()
+
+        context = {
+            "title": "House Style - Create Product",
+            "form": form
+        }
+        return render(
+            request=request, template_name="goods/product_create.html", context=context
+        )
+    else:
+        messages.warning(request, "You do not have permission to create products.")
         return HttpResponseRedirect(reverse("main:index"))

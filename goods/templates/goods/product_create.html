@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block modal_cart %}
+  {% include "includes/cart_button.html" %}
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="row">
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6 bg-white p-4 mb-4 mx-3 rounded custom-shadow">
+          <h2 class="text-center mb-4">Create product...</h2>
+          <form action="{% url 'catalog:create_product' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+
+            <div class="mb-3">
+              <label for="id_name" class="form-label">Name*</label>
+              {{ form.name }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_description" class="form-label">Description*</label>
+              {{ form.description }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_price" class="form-label">Price*</label>
+              {{ form.price }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_discount" class="form-label">Discount</label>
+              {{ form.discount }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_quantity" class="form-label">Quantity</label>
+              {{ form.quantity }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_category" class="form-label">Category*</label>
+                {{ form.category }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_image_product" class="form-label">Image</label>
+              <div class="form-control">
+                {{ form.image_product }}
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark btn-block">Create product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

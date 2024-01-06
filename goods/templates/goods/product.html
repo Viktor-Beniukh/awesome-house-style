@@ -16,8 +16,13 @@
       <div class="row">
         <!-- Thumbnails -->
         <div class="col-md-4">
-          <img src="{{ product.image_product.url }}"
-               class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1" alt="">
+          {% if product.image_product %}
+            <img src="{{ product.image_product.url }}"
+                 class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1" alt="">
+          {% else %}
+            <img src="{% static 'deps/images/Not found image.png' %}"
+                 class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#imageModal1" alt="">
+          {% endif %}
         </div>
         <div class="col-md-4 ">
           <p class="product_id mt-3">id: {{ product.display_id }}</p>
@@ -33,8 +38,11 @@
                         aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <img src="{{ product.image_product.url }}"
-                     class="img-fluid" alt="Image 1">
+                {% if product.image_product %}
+                  <img src="{{ product.image_product.url }}" class="img-fluid" alt="Image 1">
+                {% else %}
+                  <img src="{% static 'deps/images/Not found image.png' %}" class="img-fluid" alt="Image 1">
+                {% endif %}
               </div>
             </div>
           </div>
