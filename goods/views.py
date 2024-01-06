@@ -132,7 +132,7 @@ def product_update_view(request, product_slug: str):
         )
     else:
         messages.warning(request, "You do not have permission to update products.")
-        return HttpResponseRedirect(reverse("main:index"))
+        return HttpResponseRedirect(product.get_absolute_url())
 
 
 @login_required
@@ -154,4 +154,4 @@ def product_delete_view(request, product_slug: str):
         )
     else:
         messages.warning(request, "You do not have permission to remove products.")
-        return HttpResponseRedirect(reverse("main:index"))
+        return HttpResponseRedirect(product.get_absolute_url())
