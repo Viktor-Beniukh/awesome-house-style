@@ -27,6 +27,19 @@
         <div class="col-md-4 ">
           <p class="product_id mt-3">id: {{ product.display_id }}</p>
         </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-3 mt-3">
+          {% if user.is_staff %}
+          <a href="{% url 'catalog:product_update' product.slug %}"
+             class="btn btn-secondary link-to-page float-right mr-2">
+            Update
+          </a>&#8194;
+          <a href="{% url 'catalog:product_delete' product.slug %}"
+             class="btn btn-danger link-to-page float-right">
+            Delete
+          </a>
+        {% endif %}
+        </div>
         <!-- Zoom of picture in modal window -->
         <div class="modal fade" id="imageModal1" tabindex="-1"
              aria-labelledby="imageModal1Label" aria-hidden="true">

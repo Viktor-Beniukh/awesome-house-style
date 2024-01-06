@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from goods.forms import CategoryForm, ProductForm
@@ -106,4 +106,52 @@ def product_create_view(request):
         )
     else:
         messages.warning(request, "You do not have permission to create products.")
+        return HttpResponseRedirect(reverse("main:index"))
+
+
+@login_required
+def product_update_view(request, product_slug: str):
+    product = get_object_or_404(Product, slug=product_slug)
+
+    if is_admin(request.user):
+        if request.method == "POST":
+            form = ProductForm(request.POST, instance=product)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Product successfully updated")
+                return HttpResponseRedirect(product.get_absolute_url())
+        else:
+            form = ProductForm(instance=product)
+
+        context = {
+            "title": "House Style - Update Product",
+            "form": form
+        }
+        return render(
+            request=request, template_name="goods/product_update.html", context=context
+        )
+    else:
+        messages.warning(request, "You do not have permission to update products.")
+        return HttpResponseRedirect(reverse("main:index"))
+
+
+@login_required
+def product_delete_view(request, product_slug: str):
+    product = get_object_or_404(Product, slug=product_slug)
+
+    if is_admin(request.user):
+        if request.method == "POST":
+            product.delete()
+            messages.success(request, "Product successfully removed")
+            return HttpResponseRedirect(reverse("main:index"))
+
+        context = {
+            "title": "House Style - Remove Product",
+            "product": product,
+        }
+        return render(
+            request=request, template_name="goods/product_confirm_delete.html", context=context
+        )
+    else:
+        messages.warning(request, "You do not have permission to remove products.")
         return HttpResponseRedirect(reverse("main:index"))

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block modal_cart %}
+  {% include "includes/cart_button.html" %}
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="row">
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6 bg-white p-4 mb-4 mx-3 rounded custom-shadow">
+          <h2 class="text-center mb-4">Remove product...</h2>
+          <hr>
+          <p>
+            Are you sure you want to delete the product: <strong>{{ product }}</strong>?
+          </p>
+
+          <form action="{% url 'catalog:product_delete' product.slug %}" method="post">
+          {% csrf_token %}
+          <hr>
+          <br>
+
+          <input type="submit" value="Yes, delete" class="btn btn-danger">
+          <a href="{{ product.get_absolute_url }}" class="btn btn-secondary">Cancel</a>
+        </form>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
