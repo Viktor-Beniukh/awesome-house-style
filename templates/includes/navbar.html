@@ -57,7 +57,7 @@
               {% if user.is_staff %}
                 <li><a class="dropdown-item  text-white" href="{% url 'admin:index' %}">Admin panel</a></li>
                 <li><a class="dropdown-item  text-white" href="{% url 'catalog:create_category' %}">Add category</a></li>
-                <li><a class="dropdown-item  text-white" href="#">Add product</a></li>
+                <li><a class="dropdown-item  text-white" href="{% url 'catalog:create_product' %}">Add product</a></li>
               {% endif %}
               <li>
                 <hr class="dropdown-divider">
