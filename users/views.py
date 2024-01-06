@@ -35,6 +35,7 @@ def login_view(request):
                 if redirect_page and redirect_page != reverse("user:logout"):
                     return HttpResponseRedirect(request.POST.get("next"))
 
+                messages.success(request, f"Welcome {user.username} to our site")
                 return HttpResponseRedirect(reverse("main:index"))
     else:
         form = UserLoginForm()
