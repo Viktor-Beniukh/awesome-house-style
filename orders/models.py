@@ -23,6 +23,16 @@ class Order(models.Model):
     SHIPPED = "Shipped"
     RECEIVED = "Received"
 
+    PENDING = "Pending"
+    PAID = "Paid"
+    CANCELLED = "Cancelled"
+
+    STATUS_PAYMENT = [
+        (PENDING, "Pending"),
+        (PAID, "Paid"),
+        (CANCELLED, "Cancelled"),
+    ]
+
     STATUS_ORDER = (
         (NEW, "New"),
         (INPROCESSING, "In processing"),
@@ -44,6 +54,14 @@ class Order(models.Model):
     payment_on_get = models.BooleanField(default=False)
     status_order = models.CharField(max_length=20, choices=STATUS_ORDER, default=NEW)
     is_paid = models.BooleanField(default=False)
+    paid_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
+    status_payment = models.CharField(
+        max_length=10, choices=STATUS_PAYMENT, default=PENDING
+    )
+    session_url = models.URLField(max_length=500, blank=True)
+    session_id = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return f"Order № {self.pk} | Consumer {self.user.first_name} {self.user.last_name}"
