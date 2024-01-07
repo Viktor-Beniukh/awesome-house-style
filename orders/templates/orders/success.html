@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block modal_cart %}
+  {% include "includes/cart_button.html" %}
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="row">
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6 bg-white p-4 mb-4 mx-3 rounded custom-shadow">
+          <h2 class="text-center mb-4">Thanks for your order!</h2>
+
+          <section>
+            <p>
+              We appreciate your business! If you have any questions, please email
+              <a href="#">orders@example.com</a>.
+            </p>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

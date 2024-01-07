@@ -43,6 +43,7 @@ class OrderAdmin(admin.ModelAdmin):
         "user",
         "requires_delivery",
         "status_order",
+        "status_payment",
         "payment_on_get",
         "is_paid",
         "created_at",

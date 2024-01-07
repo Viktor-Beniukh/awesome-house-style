@@ -125,10 +125,12 @@
                          <p><strong>Total:</strong></p>
                          <p><strong>{{ order.order_items.total_price }} $</strong></p>
                        </div>
-                       {% if not order.is_paid %}
-                         <div>
-                           <a href="#" class="btn btn-secondary">Payment</a>
-                         </div>
+                       {% if order.payment_on_get %}
+                         {% if not order.is_paid %}
+                           <div>
+                             <a href="{% url 'orders:create-checkout-session' order.id %}" class="btn btn-secondary">Payment</a>
+                           </div>
+                         {% endif %}
                        {% endif %}
                     </div>
                   </div>
