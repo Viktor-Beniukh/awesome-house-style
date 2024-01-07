@@ -20,8 +20,64 @@
 
 {% block footer %}
   <footer class="py-4 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Home Awesome House Style 2023</p>
-    </div>
+    <section class="footer">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-md-2 col-6">
+            <h4>Information</h4>
+            <ul class="list-unstyled ml-5">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">About shop</a></li>
+              <li><a href="#">Payment and delivery</a></li>
+              <li><a href="#">Contacts</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 col-6">
+            <h4>Working hours</h4>
+            <ul class="list-unstyled">
+              <li>25, Baker street, London</li>
+              <li>mon-sun: 9 a.m. - 6 p.m.</li>
+              <li>without interruption</li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 col-6">
+            <h4>Contacts</h4>
+            <ul class="list-unstyled">
+              <li><a href="tel:5551234567">tel.: 555 123-45-67</a></li>
+              <li><a href="tel:5551234568">tel.: 555 123-45-68</a></li>
+              <li><a href="tel:5551234569">tel.: 555 123-45-69</a></li>
+              <br>
+              <li><a href="email">email: example@gmail.com</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 col-6">
+            <h4>We are online</h4>
+            <div class="footer-icons">
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+              <a href="#"><i class="bi bi-twitter"></i></a>
+              <a href="#"><i class="bi bi-telegram"></i></a>
+              <a href="#"><i class="bi bi-youtube"></i></a>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-6 subscribe">
+            {% if user.is_authenticated %}
+              <div class="w3layouts-news-letter">
+  {#              {% get_subscribe_form user %}#}
+              </div>
+            {% else %}
+              <h4 class="footer-title text-uppercase editContent mb-lg-4 mb-3">Newsletter</h4>
+              <p>Sign up and login to our website and you can subscribe to our newsletter and learn about our new products</p>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </section>
   </footer>
 {% endblock %}
