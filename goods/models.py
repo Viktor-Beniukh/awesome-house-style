@@ -1,6 +1,7 @@
 import os
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -71,3 +72,19 @@ class Product(models.Model):
             return round(self.price - self.price * self.discount / 100, 2)
 
         return self.price
+
+
+class Review(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_review"
+    )
+    text = models.TextField(blank=True)
+    parent = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Parent"
+    )
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product_review"
+    )
+
+    def __str__(self):
+        return f"{self.user} - {self.product}"

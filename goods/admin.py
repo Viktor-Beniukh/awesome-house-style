@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from goods.models import Category, Product
+from goods.models import Category, Product, Review
 
 
 @admin.register(Category)
@@ -44,3 +44,9 @@ class ProductAdmin(admin.ModelAdmin):
         return "None"
 
     image_show.__name__ = "Picture"
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ("user", "parent", "product")
+    readonly_fields = ("user",)
