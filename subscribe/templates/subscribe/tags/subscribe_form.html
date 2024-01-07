@@ -1,0 +1,15 @@
+<h4 class="footer-title text-uppercase editContent mb-lg-4 mb-3">
+    Newsletter</h4>
+
+<div class="subscribe">
+<p class="editContent">By subscribing to our mailing list you will always
+    get the latest news and updates from us.</p>
+<form class="subscribe" action="{% url 'subscribe:contact' %}" method="POST">
+    {% csrf_token %}
+    {{ subscribe_form.username }}
+    {{ subscribe_form }}
+    <button class="btn btn-outline-success" style="color: #c8c8c8">Subscribe</button>
+</form>
+<br>
+<p class="editContent">To unsubscribe, <a href="{% url 'subscribe:unsubscribe' %}">click here</a>.</p>
+</div>
