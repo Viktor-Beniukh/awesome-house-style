@@ -37,6 +37,10 @@ body {
   font-size: 0.7rem;
 }
 
+.img-fluid {
+  border-radius: 50%;
+}
+
 
 /* catalog */
 

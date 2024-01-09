@@ -2,10 +2,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
-from goods.forms import CategoryForm, ProductForm
+from goods.forms import CategoryForm, ProductForm, ReviewForm
 from goods.models import Product
 from goods.utils import q_search
 
@@ -155,3 +156,22 @@ def product_delete_view(request, product_slug: str):
     else:
         messages.warning(request, "You do not have permission to remove products.")
         return HttpResponseRedirect(product.get_absolute_url())
+
+
+@login_required
+@require_POST
+def create_review(request, product_id: int):
+    data = request.POST.copy()
+    data.update({"user": request.user.id})
+    form = ReviewForm(data)
+    product = Product.objects.get(id=product_id)
+
+    if form.is_valid():
+        review = form.save(commit=False)
+        if request.POST.get("parent", None):
+            review.parent_id = int(request.POST.get("parent"))
+        review.user = request.user
+        review.product = product
+        review.save()
+
+    return redirect(product.get_absolute_url())

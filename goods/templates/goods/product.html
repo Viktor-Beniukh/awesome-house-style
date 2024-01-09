@@ -73,4 +73,134 @@
       </div>
     </div>
   </div>
+
+  <div class="container mt-5">
+  <div class="card mb-4 custom-shadow p-3">
+  {% if user.is_authenticated %}
+    <div class="row">
+      <div class="single-form-left">
+        <!-- contact form grid -->
+        <div class="contact-single">
+          <h2 class="editContent" style="outline: none; cursor: inherit;">
+            <span class="sub-tittle editContent" style="outline: none; cursor: inherit;">
+              <small>{{ product.product_review.count }}</small>
+            </span>
+            Leave a review
+          </h2>
+
+          <form action="{% url 'catalog:review-create' product.id %}" method="post" class="mt-4" id="formReview">
+            {% csrf_token %}
+            <input type="hidden" name="parent" id="contactparent" value="">
+            <div class="form-group editContent">
+
+              <label for="contactcomment" class="editContent">
+                <strong>Your comment*</strong>
+              </label>
+              <textarea class="form-control border mt-3" rows="5"
+                        id="contactcomment" required="" name="text">
+              </textarea>
+            </div>
+            <div class="d-sm-flex">
+              <div class="col-sm-6 form-group p-0 editContent" style="outline: none; cursor: inherit;">
+                <label for="contactusername" class="editContent mt-3">
+                  <strong>Name*</strong>
+                </label>
+                <input type="text" class="form-control border mt-2"
+                       id="contactusername" required=""
+                       name="username" value="{{ request.user.username }}"
+                       readonly
+                >
+              </div>&#8194;
+              <div class="col-sm-6 form-group ml-sm-3 editContent" style="outline: none; cursor: inherit;">
+                <label for="contactemail" class="editContent mt-3">
+                  <strong>Email*</strong>
+                </label>
+                <input type="email" class="form-control border mt-2"
+                       id="contactemail" required=""
+                       name="email" value="{{ request.user.email }}"
+                       readonly
+                >
+              </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-secondary" style="outline: none; cursor: inherit; font-size: 20px">Submit</button>
+          </form>
+
+        </div>
+        <!--  //contact form grid ends here -->
+      </div>
+    </div>
+
+
+    <br>
+    <hr>
+{#    <div class="rating">#}
+{#      <form method="post" action="{% url 'store:add-rating' product.slug %}">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <button type="submit" class="btn btn-secondary mb-3">Submit Rating</button>#}
+{#      </form>#}
+{#    </div>#}
+  {% endif %}
+
+    <br><br>
+    <hr>
+    <div>
+
+      <h3 class="editContent" style="outline: none; cursor: inherit;">
+        <span class="sub-tittle editContent" style="outline: none; cursor: inherit;"></span>
+        Comments
+      </h3>
+      <hr>
+      {% for review in product.get_review %}
+        <div class="media py-5">
+
+          <img src="{{ review.user.image_user.url }}" class="mr-3 img-fluid" alt="image" width="60">&#8195;&#8195;&#8195;
+          <div class="media-body mt-4">
+            <h5 class="mt-0 editContent">{{ review.user.first_name }}</h5>
+            <p class="mt-2 editContent" style="outline: none; cursor: inherit;">{{ review.text }}</p>
+
+            {% if user.is_authenticated %}
+              {% if review.user != request.user %}
+              <a href="#formReview"
+                 onclick="addReview('{{ review.user.first_name }}','{{ review.id }}')">
+                Answer
+              </a>
+              {% endif %}
+            {% endif %}
+
+            {% for rew in review.review_set.all %}
+              <div class="media mt-5 editContent">
+                <div class="row">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-10">
+                    <a class="pr-3" href="#">
+                      <img src="{{ rew.user.image_user.url }}" class="img-fluid" alt="image" width="60">
+                    </a>
+                    <div class="media-body">
+                      <h5 class="mt-0 editContent">{{ rew.user.first_name }}</h5>
+                      <p class="mt-2 editContent">{{ rew.text }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            {% endfor %}
+
+          </div>
+
+        </div><hr>
+      {% endfor %}
+    </div>
+  </div>
+  </div>
+
+  <script>
+    function addReview(first_name, id) {
+      document.getElementById("contactparent").value = id;
+      document.getElementById("contactcomment").innerText = `${first_name}, `
+    }
+  </script>
+
+
 {% endblock %}

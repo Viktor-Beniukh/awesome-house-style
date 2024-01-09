@@ -12,4 +12,5 @@ urlpatterns = [
     path("product/<slug:product_slug>/", views.product_view, name="product"),
     path("product/<slug:product_slug>/edit/", views.product_update_view, name="product_update"),
     path("product/<slug:product_slug>/remove/", views.product_delete_view, name="product_delete"),
+    path("review/<int:product_id>/", views.create_review, name="review-create"),
 ]

@@ -73,6 +73,9 @@ class Product(models.Model):
 
         return self.price
 
+    def get_review(self):
+        return self.product_review.filter(parent__isnull=True)
+
 
 class Review(models.Model):
     user = models.ForeignKey(
