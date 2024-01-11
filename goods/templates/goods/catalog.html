@@ -22,6 +22,10 @@
 
       <form action="{% if request.GET.q %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{% endif %}"
             method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+
+        {% if not slug_url %}
+          <input type="hidden" name="slug_url" value="">
+        {% endif %}
         <div class="form-check text-white mx-3">
           <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault"
                  value="on" {% if request.GET.on_sale == "on" %}checked{% endif %}>
@@ -120,6 +124,27 @@
                 </a>
 
               </div>
+              <br>
+
+              <div class="product-bottom-details d-flex justify-content-between">
+                <div class="product-review">
+                  <a href="{{ product.get_absolute_url }}">
+                    {{ product.product_review.count }}
+                    review{{ product.product_review.count|pluralize }}
+                  </a>
+                </div>
+                <div class="product-links heart">
+                  {% if product.id in favorite_products %}
+                    <a href="#" class="favorite-icon favorite add-to-favorites" data-product-id="{{ product.id }}">
+                      <i class="bi bi-heart-fill"></i>
+                    </a>
+                  {% else %}
+                    <a href="#" class="favorite-icon add-to-favorites" data-product-id="{{ product.id }}">
+                      <i class="bi bi-heart"></i>
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
 
             </div>
 
@@ -143,6 +168,8 @@
   {% endif %}
 <br><br><br>
 
+  <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+  <script src="{% static 'deps/js/jquery-catalog.js' %}"></script>
 
 {% endblock %}
 

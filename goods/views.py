@@ -1,13 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
+from django.db.models import Value, BooleanField
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from goods.forms import CategoryForm, ProductForm, ReviewForm
-from goods.models import Product
+from goods.models import Product, FavoriteProduct
 from goods.utils import q_search
 
 
@@ -18,6 +21,13 @@ def catalog_view(request, category_slug: str = None):
     query = request.GET.get("q", None)
 
     goods = Product.objects.all()
+
+    favorite_products = []
+    if request.user.is_authenticated:
+        favorite_products = (
+            FavoriteProduct.objects.filter(user=request.user)
+            .values_list("product_id", flat=True)
+        )
 
     if category_slug and category_slug != "all-goods":
         goods = goods.filter(category__slug=category_slug)
@@ -36,6 +46,7 @@ def catalog_view(request, category_slug: str = None):
 
     context = {
         "title": "House Style - Catalog",
+        "favorite_products": favorite_products,
         "goods": current_page,
         "slug_url": category_slug
     }
@@ -175,3 +186,47 @@ def create_review(request, product_id: int):
         review.save()
 
     return redirect(product.get_absolute_url())
+
+
+@login_required
+def favorite_products_view(request):
+    user = request.user
+    favorite_products = (
+        FavoriteProduct.objects
+        .filter(user=user)
+        .select_related("product")
+        .annotate(is_favorite=Value(True, output_field=BooleanField()))
+    )
+
+    context = {
+        "title": "House Style - Favorite Products",
+        "favorite_products": favorite_products,
+    }
+
+    return render(request, "goods/favorite_products.html", context)
+
+
+@login_required
+@csrf_exempt
+def toggle_favorite_view(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+
+        if not product_id or not product_id.isdigit():
+            return JsonResponse({"error": "Invalid product_id"}, status=400)
+
+        user = request.user
+
+        try:
+            favorite_product = FavoriteProduct.objects.get(user=user, product_id=product_id)
+            favorite_product.delete()
+            is_favorite = False
+        except FavoriteProduct.DoesNotExist:
+            FavoriteProduct.objects.create(user=user, product_id=product_id)
+            is_favorite = True
+
+        favorites_count = user.favoriteproduct_set.count()
+
+        return JsonResponse({"is_favorite": is_favorite, "favorites_count": favorites_count})
+    else:
+        return JsonResponse({"error": "Method not allowed"}, status=405)

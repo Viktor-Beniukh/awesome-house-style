@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+{% load goods_tags %}
+
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block modal_cart %}
+  {% include "includes/cart_button.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <h1 class="mb-3 text-center">Favorite Products</h1>
+
+  <!-- Content on page -->
+  <div class="row">
+
+    {% if request.GET.q %}
+      <h3 class="mt-4">Search results for "{{ request.GET.q }}"</h3>
+      {% if not goods %}
+          <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}">
+          <h2 class="mt-4">Nothing found on request</h2>
+      {% endif %}
+    {% endif %}
+
+
+    {% if favorite_products %}
+      {% for favorite_product in favorite_products %}
+
+        <!-- Product card -->
+        <div class="col-lg-4 col-md-6 p-4 card-product">
+          <div class="card border-primary rounded custom-shadow">
+            {% if favorite_product.product.image_product %}
+              <img src="{{ favorite_product.product.image_product.url }}" class="card-img-top" alt="{{ favorite_product.product.name }}">
+            {% else %}
+              <img src="{% static 'deps/images/Not found image.png' %}" class="card-img-top" alt="...">
+            {% endif %}
+
+            <div class="card-body">
+              <a class="product-card" href="{{ favorite_product.product.get_absolute_url }}">
+                <p class="card-title text-center">
+                  {{ favorite_product.product.name }}
+    {#               {% autoescape off %}#}
+    {#                 {% if product.headline %}#}
+    {#                   {{product.headline}}#}
+    {#                 {% else %}#}
+    {#                   {{ product.name }}#}
+    {#                 {% endif %}#}
+    {#               {% endautoescape %}#}
+                </p>
+              </a>
+              <p class="card-text">
+                {{ favorite_product.product.description|truncatechars:35 }}
+    {#             {% autoescape off %}#}
+    {#               {% if product.bodyline %}#}
+    {#                 {{product.bodyline|truncatechars:100}}#}
+    {#               {% else %}#}
+    {#                 {{ product.description|truncatechars:35 }}#}
+    {#               {% endif %}#}
+    {#             {% endautoescape %}#}
+              </p>
+              <p class="product_id">id: {{ favorite_product.product.display_id }}</p>
+
+              <div class="d-flex justify-content-between">
+
+                {% if favorite_product.product.discount %}
+                  <p><s>{{ favorite_product.product.price }}</s> $</p>
+                  <p><strong>{{ favorite_product.product.sell_price }} $</strong></p>
+                  <span class="badge bg-warning text-dark">Discount {{ favorite_product.product.discount }} %</span>
+                {% else %}
+                  <p><strong>{{ favorite_product.product.price }} $</strong></p>
+                {% endif %}
+
+                <a href="{% url 'cart:cart_add' %}" class="btn add-to-cart" data-product-id="{{ favorite_product.product.id }}">
+                  {% csrf_token %}
+                  <input type="hidden" name="slug_url" value="{% if slug_url %}{{ slug_url }}{% endif %}">
+                  <img class="mx-1" src="{% static 'deps/icons/cart-plus.svg' %}" alt="Catalog Icon"
+                       width="32" height="32">
+                </a>
+
+              </div>
+
+              <div class="product-bottom-details d-flex justify-content-between">
+                <div class="product-review">
+                  <a href="{{ favorite_product.product.get_absolute_url }}">
+                    {{ favorite_product.product.product_review.count }}
+                    review{{ favorite_product.product.product_review.count|pluralize }}
+                  </a>
+                </div>
+                <div class="product-links heart">
+                  <a href="#" class="favorite-icon favorite" data-product-id="{{ favorite_product.product.id }}">
+                    <i class="bi bi-heart-fill"></i>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        <!-- Product card -->
+
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  {% if favorite_products %}
+    <h4 class="text-center" id="no-products-msg" style="display: none;">You don't have the goods yet.</h4>
+  {% else %}
+    <h4 class="text-center" id="no-products-msg">You don't have the goods yet.</h4>
+  {% endif %}
+
+  {% if goods %}
+    <!-- Pagination -->
+    {% block pagination %}
+      {% include "goods/includes/pagination.html" %}
+    {% endblock %}
+  {% endif %}
+<br><br><br>
+
+
+  <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+  <script src="{% static 'deps/js/jquery-favorite.js' %}"></script>
+
+
+{% endblock %}
+
+
+{% block footer %}
+  <footer class="py-4 bg-dark fixed-bottom">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Home Awesome House Style 2023</p>
+    </div>
+  </footer>
+{% endblock %}

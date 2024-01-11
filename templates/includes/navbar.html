@@ -41,6 +41,15 @@
           </li>
         {% else %}
 
+          <a id="fav-icon" class="nav-link" href="{% url 'catalog:favorite_products' %}">
+            <i class="bi bi-heart-fill text-center"></i>
+          </a>
+          {% if request.user.favoriteproduct_set.count > 0 %}
+            <p id="fav-count" class="favorites-count">{{ request.user.favoriteproduct_set.count }}</p>
+          {% else %}
+            <p id="fav-count" class="favorites-count">0</p>
+          {% endif %}
+
           <li class="nav-item dropdown">
 
             <a class="nav-link dropdown-toggle text-white" href="#" role="button"
