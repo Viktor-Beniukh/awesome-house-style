@@ -63,7 +63,22 @@
       </div>
       <!-- Product description -->
       <div class="card-body">
-        <p class="card-text">Price: <strong>{{ product.sell_price }} $</strong></p>
+         <div class="d-flex">
+          <p class="card-text">Price: <strong>{{ product.sell_price }} $</strong></p>&#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195;
+
+          <div class="product-links heart mx-5">
+            {% if product.id in favorite_products %}
+              <a href="#" class="favorite-icon favorite add-to-favorites" data-product-id="{{ product.id }}">
+                <i class="bi bi-heart-fill"></i>
+              </a>
+            {% else %}
+              <a href="#" class="favorite-icon add-to-favorites" data-product-id="{{ product.id }}">
+                <i class="bi bi-heart"></i>
+              </a>
+            {% endif %}
+          </div>
+         </div>
+
         <h5 class="card-title">{{ product.name }}</h5>
         <p class="card-text">{{ product.description }}</p>
         <a href="{% url "cart:cart_add" %}" class="btn btn-dark add-to-cart" data-product-id="{{ product.id }}">
@@ -201,6 +216,9 @@
       document.getElementById("contactcomment").innerText = `${first_name}, `
     }
   </script>
+
+  <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+  <script src="{% static 'deps/js/jquery-catalog.js' %}"></script>
 
 
 {% endblock %}

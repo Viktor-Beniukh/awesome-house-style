@@ -59,9 +59,17 @@ def catalog_view(request, category_slug: str = None):
 def product_view(request, product_slug: str):
     product = Product.objects.get(slug=product_slug)
 
+    favorite_products = []
+    if request.user.is_authenticated:
+        favorite_products = (
+            FavoriteProduct.objects.filter(user=request.user)
+            .values_list("product_id", flat=True)
+        )
+
     context = {
         "title": f"House Style - {product.name}",
-        "product": product
+        "product": product,
+        "favorite_products": favorite_products,
     }
 
     return render(
