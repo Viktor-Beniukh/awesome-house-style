@@ -99,3 +99,16 @@ class FavoriteProduct(models.Model):
 
     class Meta:
         unique_together = ("user", "product")
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_rating"
+    )
+    rating = models.PositiveIntegerField()
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product_rating"
+    )
+
+    def __str__(self):
+        return f"{self.rating} - {self.product}"

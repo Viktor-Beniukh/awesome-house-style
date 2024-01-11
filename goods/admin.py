@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from goods.models import Category, Product, Review, FavoriteProduct
+from goods.models import Category, Product, Review, FavoriteProduct, Rating
 
 
 @admin.register(Category)
@@ -55,3 +55,8 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(FavoriteProduct)
 class FavoriteProductAdmin(admin.ModelAdmin):
     list_display = ("product", "user")
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ("product", "rating", "user")
