@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Value, BooleanField
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from goods.forms import CategoryForm, ProductForm, ReviewForm
-from goods.models import Product, FavoriteProduct
+from goods.models import Product, FavoriteProduct, Rating
 from goods.utils import q_search
 
 
@@ -238,3 +238,32 @@ def toggle_favorite_view(request):
         return JsonResponse({"is_favorite": is_favorite, "favorites_count": favorites_count})
     else:
         return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
+@login_required
+@csrf_exempt
+def add_rating_view(request, product_id):
+    if request.method == "POST":
+        user = request.user
+        rating_value = int(request.POST.get("rating"))
+
+        try:
+            product = Product.objects.get(id=product_id)
+            existing_rating = Rating.objects.filter(user=user, product=product).first()
+
+            if existing_rating:
+                existing_rating.rating = rating_value
+                existing_rating.save()
+            else:
+                Rating.objects.create(user=user, product=product, rating=rating_value)
+
+            product.refresh_from_db()
+            average_rating = product.average_rating()
+
+            return JsonResponse({"success": True, "average_rating": average_rating})
+        except Product.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Product not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+    else:
+        return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)

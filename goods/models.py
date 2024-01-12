@@ -76,6 +76,13 @@ class Product(models.Model):
     def get_review(self):
         return self.product_review.filter(parent__isnull=True)
 
+    def average_rating(self):
+        ratings = self.product_rating.all()
+        if ratings:
+            return sum([rating.rating for rating in ratings]) / len(ratings)
+        else:
+            return 0
+
 
 class Review(models.Model):
     user = models.ForeignKey(

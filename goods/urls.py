@@ -8,6 +8,7 @@ urlpatterns = [
     path("search/", views.catalog_view, name="search"),
     path("favorite-products/", views.favorite_products_view, name="favorite_products"),
     path("toggle-favorite/", views.toggle_favorite_view, name="toggle_favorite"),
+    path("add-rating/<int:product_id>/", views.add_rating_view, name="add_rating"),
     path("create-category/", views.category_create_view, name="create_category"),
     path("create-product/", views.product_create_view, name="create_product"),
     path("<slug:category_slug>/", views.catalog_view, name="index"),

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
+
 {% block title %}{{ title }}{% endblock %}
 
 
@@ -26,7 +27,21 @@
         </div>
         <div class="col-md-4 ">
           <p class="product_id mt-3">id: {{ product.display_id }}</p>
+
+          <div class="star-container" data-product-id="{{ product.id }}" data-average-rating="{{ product.average_rating }}">
+            <p>
+              {% for i in "12345" %}
+                {% if i|add:"0" <= product.average_rating %}
+                  <span class="star star-filled" data-rating="{{ i|add:'0' }}">&#9733;</span>
+                {% else %}
+                  <span class="star star-empty" data-rating="{{ i|add:'0' }}">&#9733;</span>
+                {% endif %}
+              {% endfor %}
+            </p>
+          </div>
+
         </div>
+
         <div class="col-md-1"></div>
         <div class="col-md-3 mt-3">
           {% if user.is_staff %}
@@ -149,13 +164,6 @@
 
     <br>
     <hr>
-{#    <div class="rating">#}
-{#      <form method="post" action="{% url 'store:add-rating' product.slug %}">#}
-{#        {% csrf_token %}#}
-{#        {{ form.as_p }}#}
-{#        <button type="submit" class="btn btn-secondary mb-3">Submit Rating</button>#}
-{#      </form>#}
-{#    </div>#}
   {% endif %}
 
     <br><br>
@@ -219,6 +227,8 @@
 
   <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
   <script src="{% static 'deps/js/jquery-catalog.js' %}"></script>
+  <script src="{% static 'deps/js/jquery-rating.js' %}"></script>
+
 
 
 {% endblock %}
