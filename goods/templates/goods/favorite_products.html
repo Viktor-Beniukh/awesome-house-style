@@ -95,6 +95,20 @@
                 </div>
               </div>
 
+              <div class="product-bottom-details">
+                <div class="star-container text-center">
+                  <p>
+                    {% for i in "12345" %}
+                      {% if i|add:"0" <= favorite_product.product.average_rating %}
+                        <span class="star star-filled">&#9733;</span>
+                      {% else %}
+                        <span class="star star-empty">&#9733;</span>
+                      {% endif %}
+                    {% endfor %}
+                  </p>
+                </div>
+              </div>
+
             </div>
 
           </div>
