@@ -38,7 +38,7 @@ class UserProfileForm(UserChangeForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
     username = forms.CharField()
-    email = forms.CharField()
+    email = forms.EmailField()
 
     class Meta:
         model = User
