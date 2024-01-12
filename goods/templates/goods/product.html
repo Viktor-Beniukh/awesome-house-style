@@ -184,11 +184,13 @@
             <p class="mt-2 editContent" style="outline: none; cursor: inherit;">{{ review.text }}</p>
 
             {% if user.is_authenticated %}
-              {% if review.user != request.user %}
-              <a href="#formReview"
-                 onclick="addReview('{{ review.user.first_name }}','{{ review.id }}')">
-                Answer
-              </a>
+              {% if user.is_staff %}
+                {% if review.user != request.user %}
+                <a href="#formReview"
+                   onclick="addReview('{{ review.user.first_name }}','{{ review.id }}')">
+                  Answer
+                </a>
+                {% endif %}
               {% endif %}
             {% endif %}
 
