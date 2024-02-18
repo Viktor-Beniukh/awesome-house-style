@@ -427,3 +427,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django,pycharm+all,windows,linux,macos
 /fixtures/
+/postgres-data/
