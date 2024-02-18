@@ -28,7 +28,7 @@ urlpatterns = [
     path("cart/", include("carts.urls", namespace="cart")),
     path("orders/", include("orders.urls", namespace="orders")),
     path("subscribe/", include("subscribe.urls", namespace="subscribe")),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
     urlpatterns += [
