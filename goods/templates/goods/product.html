@@ -81,17 +81,19 @@
          <div class="d-flex">
           <p class="card-text">Price: <strong>{{ product.sell_price }} $</strong></p>&#8195;&#8195;&#8195;&#8195;&#8195;&#8195;&#8195;
 
-          <div class="product-links heart mx-5">
-            {% if product.id in favorite_products %}
-              <a href="#" class="favorite-icon favorite add-to-favorites" data-product-id="{{ product.id }}">
-                <i class="bi bi-heart-fill"></i>
-              </a>
-            {% else %}
-              <a href="#" class="favorite-icon add-to-favorites" data-product-id="{{ product.id }}">
-                <i class="bi bi-heart"></i>
-              </a>
-            {% endif %}
-          </div>
+          {% if user.is_authenticated %}
+            <div class="product-links heart mx-5">
+              {% if product.id in favorite_products %}
+                <a href="#" class="favorite-icon favorite add-to-favorites" data-product-id="{{ product.id }}">
+                  <i class="bi bi-heart-fill"></i>
+                </a>
+              {% else %}
+                <a href="#" class="favorite-icon add-to-favorites" data-product-id="{{ product.id }}">
+                  <i class="bi bi-heart"></i>
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
          </div>
 
         <h5 class="card-title">{{ product.name }}</h5>

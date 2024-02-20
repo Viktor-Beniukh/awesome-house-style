@@ -133,17 +133,19 @@
                     review{{ product.product_review.count|pluralize }}
                   </a>
                 </div>
-                <div class="product-links heart">
-                  {% if product.id in favorite_products %}
-                    <a href="#" class="favorite-icon favorite add-to-favorites" data-product-id="{{ product.id }}">
-                      <i class="bi bi-heart-fill"></i>
-                    </a>
-                  {% else %}
-                    <a href="#" class="favorite-icon add-to-favorites" data-product-id="{{ product.id }}">
-                      <i class="bi bi-heart"></i>
-                    </a>
-                  {% endif %}
-                </div>
+                {% if user.is_authenticated %}
+                  <div class="product-links heart">
+                    {% if product.id in favorite_products %}
+                      <a href="#" class="favorite-icon favorite add-to-favorites" data-product-id="{{ product.id }}">
+                        <i class="bi bi-heart-fill"></i>
+                      </a>
+                    {% else %}
+                      <a href="#" class="favorite-icon add-to-favorites" data-product-id="{{ product.id }}">
+                        <i class="bi bi-heart"></i>
+                      </a>
+                    {% endif %}
+                  </div>
+                {% endif %}
               </div>
 
               <div class="product-bottom-details">
