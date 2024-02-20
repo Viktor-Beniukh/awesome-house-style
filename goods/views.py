@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Value, BooleanField
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
@@ -57,7 +57,10 @@ def catalog_view(request, category_slug: str = None):
 
 
 def product_view(request, product_slug: str):
-    product = Product.objects.get(slug=product_slug)
+    try:
+        product = Product.objects.get(slug=product_slug)
+    except Product.DoesNotExist:
+        raise Http404("Product not found")
 
     favorite_products = []
     if request.user.is_authenticated:
@@ -180,10 +183,11 @@ def product_delete_view(request, product_slug: str):
 @login_required
 @require_POST
 def create_review(request, product_id: int):
+    product = get_object_or_404(Product, id=product_id)
+
     data = request.POST.copy()
     data.update({"user": request.user.id})
     form = ReviewForm(data)
-    product = Product.objects.get(id=product_id)
 
     if form.is_valid():
         review = form.save(commit=False)
@@ -192,6 +196,9 @@ def create_review(request, product_id: int):
         review.user = request.user
         review.product = product
         review.save()
+        messages.success(request, "Review successfully added.")
+    else:
+        messages.warning(request, "Failed to add the review. Please check the form.")
 
     return redirect(product.get_absolute_url())
 
