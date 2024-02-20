@@ -74,6 +74,13 @@ class ProductForm(forms.ModelForm):
 
 
 class ReviewForm(forms.ModelForm):
+    text = forms.CharField(
+        widget=forms.Textarea(attrs={
+            "class": "form-control",
+            "rows": 5,
+            "required": True
+        })
+    )
 
     class Meta:
         model = Review
