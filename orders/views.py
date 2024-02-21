@@ -63,11 +63,13 @@ def create_order_view(request):
 
                         cart_items.delete()
 
-                        messages.success(request, "Order is made!")
+                        messages.success(request, "Your order has been placed successfully!")
                         return redirect("users:profile")
             except ValidationError as e:
                 messages.warning(request, str(e))
                 return redirect("cart:order")
+        else:
+            messages.warning(request, "Please correct the errors in the form.")
     else:
         initial = {
             "first_name": request.user.first_name,
