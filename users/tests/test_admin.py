@@ -26,6 +26,7 @@ class AdminSiteTests(TestCase):
             phone_number="+987654321023",
             first_name="test",
             last_name="user",
+            image_user="uploads/default.jpg"
         )
 
     def test_list_display(self):
@@ -44,7 +45,7 @@ class AdminSiteTests(TestCase):
 
     def test_user_create_additional_fields_listed(self):
         """
-        Tests that user's additional fields (first name, last name, phone number) is on user detail admin page
+        Tests that user's additional fields (first name, last name, phone number, image_user) is on user detail admin page
         """
 
         url = reverse("admin:users_user_change", args=[self.user.id])
@@ -53,3 +54,19 @@ class AdminSiteTests(TestCase):
         self.assertContains(response, self.user.first_name)
         self.assertContains(response, self.user.last_name)
         self.assertContains(response, self.user.phone_number)
+        self.assertContains(response, self.user.image_user)
+
+    def test_user_create_additional_fields_added_user(self):
+        """
+        Tests that user's additional fields (first name, last name, phone number, image_user, email)
+        are added to the user creation page
+        """
+
+        url = reverse("admin:users_user_add")
+        response = self.client.get(url)
+
+        self.assertContains(response, 'name="first_name"')
+        self.assertContains(response, 'name="last_name"')
+        self.assertContains(response, 'name="phone_number"')
+        self.assertContains(response, 'name="image_user"')
+        self.assertContains(response, 'name="email"')
