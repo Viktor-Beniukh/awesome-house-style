@@ -10,8 +10,8 @@ from orders.models import Order, OrderItem
 
 class OrderModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
-        user = get_user_model().objects.create(
+    def setUpTestData(cls) -> None:
+        user = get_user_model().objects.create_user(
             email="admin@user.com",
             password="admin12345",
             username="Admin"
@@ -79,8 +79,8 @@ class OrderModelTest(TestCase):
 
 class OrderItemModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
-        user = get_user_model().objects.create(
+    def setUpTestData(cls) -> None:
+        user = get_user_model().objects.create_user(
             email="admin@user.com",
             password="admin12345",
             username="Admin"

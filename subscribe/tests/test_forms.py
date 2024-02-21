@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class SubscribeFormTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create_user(
             username="testuser",
             password="testpassword",
@@ -33,11 +33,13 @@ class SubscribeFormTest(TestCase):
             "is_subscribed": True,
             "email": "invalid_email",
         }
+
         form = SubscribeForm(user=self.user, data=form_data)
         self.assertFalse(form.is_valid())
 
         form_data = {
             "is_subscribed": True,
         }
+
         form = SubscribeForm(user=self.user, data=form_data)
         self.assertFalse(form.is_valid())

@@ -1,13 +1,17 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from goods.models import Product, Category
 from carts.models import Cart
 
 
+CART_ADD_URL = reverse("cart:cart_add")
+CART_UPDATE_URL = reverse("cart:cart_change")
+CART_REMOVE_URL = reverse("cart:cart_remove")
+
+
 class CartViewsTest(TestCase):
-    def setUp(self):
-        self.client = Client()
+    def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(
             username="testuser",
             email="testuser@example.com",
@@ -26,9 +30,7 @@ class CartViewsTest(TestCase):
     def test_cart_add_view_authenticated_user(self):
         self.client.force_login(self.user)
 
-        response = self.client.post(
-            reverse("cart:cart_add"), {"product_id": self.product.id}
-        )
+        response = self.client.post(CART_ADD_URL, {"product_id": self.product.id})
 
         self.assertEqual(response.status_code, 200)
 
@@ -37,9 +39,7 @@ class CartViewsTest(TestCase):
         self.assertTemplateUsed(response, "carts/includes/included_cart.html")
 
     def test_cart_add_view_anonymous_user(self):
-        response = self.client.post(
-            reverse("cart:cart_add"), {"product_id": self.product.id}
-        )
+        response = self.client.post(CART_ADD_URL, {"product_id": self.product.id})
 
         self.assertEqual(response.status_code, 200)
 
@@ -50,7 +50,7 @@ class CartViewsTest(TestCase):
     def test_cart_change_view(self):
         new_quantity = 5
         response = self.client.post(
-            reverse("cart:cart_change"), {"cart_id": self.cart.id, "quantity": new_quantity}
+            CART_UPDATE_URL, {"cart_id": self.cart.id, "quantity": new_quantity}
         )
 
         self.assertEqual(response.status_code, 200)
@@ -61,7 +61,7 @@ class CartViewsTest(TestCase):
         self.assertTemplateUsed(response, "carts/includes/included_cart.html")
 
     def test_cart_remove_view(self):
-        response = self.client.post(reverse("cart:cart_remove"), {"cart_id": self.cart.id})
+        response = self.client.post(CART_REMOVE_URL, {"cart_id": self.cart.id})
 
         self.assertEqual(response.status_code, 200)
 

@@ -10,56 +10,16 @@ from django.contrib.auth.tokens import default_token_generator
 
 User = get_user_model()
 
-REGISTER_URL = reverse("user:register")
-LOGIN_URL = reverse("user:login")
-PROFILE_URL = reverse("user:profile")
+
 RESET_PASSWORD_URL = reverse("user:reset_password")
+PASSWORD_SUCCESS_URL = reverse("user:password-success")
 
 
-class UserRegisterTests(TestCase):
-
-    def test_user_register(self):
-        response = self.client.get(REGISTER_URL)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "users/register.html")
-
-    def test_create_user(self):
-        form_data = {
-            "username": "new_user",
-            "email": "user@test.com",
-            "password1": "user123test",
-            "password2": "user123test",
-            "first_name": "Test first",
-            "last_name": "Test last",
-        }
-
-        self.client.post(REGISTER_URL, data=form_data)
-        new_user = get_user_model().objects.get(email=form_data["email"])
-
-        self.assertEqual(new_user.username, form_data["username"])
-        self.assertEqual(new_user.first_name, form_data["first_name"])
-        self.assertEqual(new_user.last_name, form_data["last_name"])
+def detail_change_password_url(user_id: int):
+    return reverse("user:password-change", kwargs={"pk": user_id})
 
 
-class UserLoginTests(TestCase):
-
-    def test_user_login(self):
-        response = self.client.get(LOGIN_URL)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "users/login.html")
-
-
-class ProfilePublicTests(TestCase):
-
-    def test_login_required(self):
-        response = self.client.get(PROFILE_URL)
-
-        self.assertNotEqual(response.status_code, 200)
-
-
-class ProfilePrivateTests(TestCase):
+class ChangePasswordViewTests(TestCase):
     def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(
             username="user_name",
@@ -68,26 +28,13 @@ class ProfilePrivateTests(TestCase):
         )
         self.client.force_login(self.user)
 
-    def test_retrieve_profile(self):
-        response = self.client.get(PROFILE_URL)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "users/profile.html")
-
-
-class ChangePasswordViewTests(TestCase):
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username="user_name",
-            email="user@test.com",
-            password="user12345"
-        )
-        self.client.force_login(self.user)
-        self.url = reverse("user:password-change", kwargs={"pk": self.user.pk})
+        self.url = detail_change_password_url(user_id=self.user.pk)
 
     def test_change_password_view_render(self):
         response = self.client.get(self.url)
+
         self.assertEqual(response.status_code, 200)
+
         self.assertTemplateUsed(response, "users/password_change_form.html")
 
     def test_change_password_form_valid(self):
@@ -96,8 +43,9 @@ class ChangePasswordViewTests(TestCase):
             "new_password1": "newpass123",
             "new_password2": "newpass123",
         }
+
         response = self.client.post(self.url, data)
-        self.assertRedirects(response, reverse("user:password-success"))
+        self.assertRedirects(response, PASSWORD_SUCCESS_URL)
 
         updated_user = get_user_model().objects.get(pk=self.user.pk)
         self.assertTrue(updated_user.check_password("newpass123"))
@@ -123,7 +71,7 @@ class ChangePasswordViewTests(TestCase):
 
 
 class ResetPasswordViewTests(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(
             username="user_name",
             email="user@test.com",
@@ -155,7 +103,7 @@ class ResetPasswordViewTests(TestCase):
 
 
 class PasswordResetConfirmViewTests(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(
             username="test_user",
             email="test@example.com",
@@ -170,6 +118,7 @@ class PasswordResetConfirmViewTests(TestCase):
             kwargs={"uidb64": self.uidb64, "token": self.token}
         )
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, 200)
 
         self.assertIn("form", response.context)
@@ -184,6 +133,7 @@ class PasswordResetConfirmViewTests(TestCase):
             kwargs={"uidb64": self.uidb64, "token": "invalid-token"}
         )
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, 200)
 
         context = response.context[-1]

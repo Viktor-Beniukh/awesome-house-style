@@ -6,7 +6,7 @@ from subscribe.models import Subscriber
 
 
 class SubscriberAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.subscriber_admin = SubscriberAdmin(Subscriber, self.admin_site)
 

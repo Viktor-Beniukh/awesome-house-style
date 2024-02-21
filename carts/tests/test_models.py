@@ -5,7 +5,7 @@ from carts.models import Cart
 
 
 class CartModelTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = get_user_model().objects.create(
             email="admin@user.com",
             password="admin12345",

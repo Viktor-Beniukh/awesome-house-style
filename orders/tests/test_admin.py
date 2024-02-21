@@ -5,7 +5,7 @@ from orders.models import Order, OrderItem
 
 
 class OrderAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.order_admin = OrderAdmin(Order, self.admin_site)
 
@@ -45,7 +45,7 @@ class OrderAdminTest(TestCase):
 
 
 class OrderItemAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.order_item_admin = OrderItemAdmin(OrderItem, self.admin_site)
 

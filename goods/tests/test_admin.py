@@ -7,7 +7,7 @@ from goods.models import Category, Product, Review, FavoriteProduct, Rating
 
 
 class CategoryAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.category_admin = CategoryAdmin(Category, self.admin_site)
 
@@ -22,7 +22,7 @@ class CategoryAdminTest(TestCase):
 
 
 class ProductAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.product_admin = ProductAdmin(Product, self.admin_site)
 
@@ -66,7 +66,7 @@ class ProductAdminTest(TestCase):
 
 
 class ReviewAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.review_admin = ReviewAdmin(Review, self.admin_site)
 
@@ -80,7 +80,7 @@ class ReviewAdminTest(TestCase):
 
 
 class FavoriteProductAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.review_admin = FavoriteProductAdmin(FavoriteProduct, self.admin_site)
 
@@ -90,7 +90,7 @@ class FavoriteProductAdminTest(TestCase):
 
 
 class RatingAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin_site = AdminSite()
         self.review_admin = RatingAdmin(Rating, self.admin_site)
 

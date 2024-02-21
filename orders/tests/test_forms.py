@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class OrderCreateFormTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create_user(
             username="testuser",
             email="john.doe@example.com",

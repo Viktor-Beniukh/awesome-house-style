@@ -7,15 +7,16 @@ from goods.models import Product, Category
 
 
 class CartAdminTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.site = AdminSite()
         self.cart_admin = CartAdmin(Cart, self.site)
         self.cart_tab_admin = CartTabAdmin(Cart, self.site)
-        self.user = get_user_model().objects.create_user(
+        self.admin_user = get_user_model().objects.create_superuser(
             email="admin@user.com",
             password="admin12345",
             username="Admin"
         )
+        self.client.force_login(self.admin_user)
         self.category = Category.objects.create(name="Test", slug="test")
         self.product = Product.objects.create(
             name="Product",
@@ -23,6 +24,11 @@ class CartAdminTest(TestCase):
             price=100.0,
             discount=10.0,
             category=self.category
+        )
+        self.user = get_user_model().objects.create_user(
+            email="test@user.com",
+            password="user12345",
+            username="TestUser"
         )
         self.cart = Cart.objects.create(user=self.user, product=self.product, quantity=3)
 

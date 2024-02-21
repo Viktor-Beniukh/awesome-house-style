@@ -7,7 +7,7 @@ User = get_user_model()
 class UserModelTest(TestCase):
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls) -> None:
         User.objects.create_user(
             email="admin@user.com",
             password="admin12345",

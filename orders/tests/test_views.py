@@ -11,8 +11,24 @@ from carts.models import Cart
 User = get_user_model()
 
 
-class OrderViewsTest(TestCase):
-    def setUp(self):
+ORDER_URL = reverse("orders:create_order")
+ORDER_SUCCESS_URL = reverse("orders:success")
+ORDER_CANCEL_URL = reverse("orders:cancel")
+
+
+def detail_checkout_session_url(order_id: int):
+    return reverse("orders:create-checkout-session", args=[order_id])
+
+
+class PublicOrderTests(TestCase):
+    def test_login_required(self):
+        response = self.client.get(ORDER_URL)
+
+        self.assertNotEqual(response.status_code, 200)
+
+
+class PrivateOrderViewsTest(TestCase):
+    def setUp(self) -> None:
         self.user = User.objects.create_user(
             username="testuser",
             first_name="Test",
@@ -43,12 +59,15 @@ class OrderViewsTest(TestCase):
         )
 
     def test_create_order_view_get(self):
-        response = self.client.get(reverse("orders:create_order"))
+        response = self.client.get(ORDER_URL)
+
         self.assertEqual(response.status_code, 200)
+
         self.assertTemplateUsed(response, "orders/create_order.html")
 
     def test_create_order_view_post_success(self):
         order = Order.objects.create(user=self.user)
+
         cart1 = Cart.objects.create(user=self.user, product=self.product1, quantity=3)
         cart2 = Cart.objects.create(user=self.user, product=self.product2, quantity=2)
 
@@ -61,7 +80,7 @@ class OrderViewsTest(TestCase):
 
         order.order_items.set([cart_item1, cart_item2])
 
-        response = self.client.post(reverse("orders:create_order"), {
+        response = self.client.post(ORDER_URL, {
             "first_name": self.user.first_name,
             "last_name": self.user.last_name,
             "email": self.user.email,
@@ -110,10 +129,13 @@ class OrderViewsTest(TestCase):
     @patch("stripe.checkout.Session.create")
     def test_create_checkout_session(self, mock_stripe_session_create):
         order = Order.objects.create(user=self.user)
+
         mock_stripe_session_create.return_value.id = "test_session_id"
         mock_stripe_session_create.return_value.url = "https://example.com/checkout"
 
-        response = self.client.get(reverse("orders:create-checkout-session", args=[order.id]))
+        checkout_session_url = detail_checkout_session_url(order.id)
+
+        response = self.client.get(checkout_session_url)
 
         self.assertEqual(response.status_code, 302)
 
@@ -127,7 +149,7 @@ class OrderViewsTest(TestCase):
             user=self.user, session_id="test_session_id", status_payment=Order.PENDING
         )
 
-        response = self.client.get(reverse("orders:success"))
+        response = self.client.get(ORDER_SUCCESS_URL)
 
         self.assertEqual(response.status_code, 200)
 
@@ -142,7 +164,7 @@ class OrderViewsTest(TestCase):
             user=self.user, session_id="test_session_id", status_payment=Order.PENDING
         )
 
-        response = self.client.get(reverse("orders:cancel"))
+        response = self.client.get(ORDER_CANCEL_URL)
 
         self.assertEqual(response.status_code, 200)
 

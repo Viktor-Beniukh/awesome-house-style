@@ -8,7 +8,7 @@ from goods.models import Category, Product, Review, Rating
 
 class CategoryModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls) -> None:
         Category.objects.create(name="Test", slug="test")
 
     def test_category_str(self):
@@ -30,7 +30,7 @@ class CategoryModelTest(TestCase):
 
 class ProductModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls) -> None:
         category = Category.objects.create(name="Test", slug="test")
         Product.objects.create(
             name="Product",
@@ -89,8 +89,8 @@ class ProductModelTest(TestCase):
 
 class ReviewModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
-        user = get_user_model().objects.create(
+    def setUpTestData(cls) -> None:
+        user = get_user_model().objects.create_user(
             email="admin@user.com",
             password="admin12345",
             username="Admin"
@@ -115,8 +115,8 @@ class ReviewModelTest(TestCase):
 
 class RatingModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
-        user = get_user_model().objects.create(
+    def setUpTestData(cls) -> None:
+        user = get_user_model().objects.create_user(
             email="admin@user.com",
             password="admin12345",
             username="Admin"

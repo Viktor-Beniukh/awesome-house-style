@@ -48,7 +48,7 @@ class UserFormTests(TestCase):
 
 
 class UserLoginTest(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = get_user_model().objects.create_user(
             username="user_name",
             email="user@test.com",
