@@ -150,8 +150,8 @@ def password_success_view(request):
 
 
 def reset_password_view(request):
+    form = PasswordResetForm(request.POST or None)
     if request.method == "POST":
-        form = PasswordResetForm(request.POST)
         if form.is_valid():
             form.save(
                 request=request,
@@ -162,7 +162,8 @@ def reset_password_view(request):
             return redirect(reverse("user:password_reset_done"))
 
     context = {
-        "title": "House Style - Reset Password"
+        "title": "House Style - Reset Password",
+        "form": form,
     }
 
     return render(
