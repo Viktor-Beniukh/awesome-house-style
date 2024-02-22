@@ -91,8 +91,8 @@ Docker should be installed
 
 ## Testing
 
-- Run tests using different approach: `docker-compose run app sh -c "python manage.py test"`.
-
+- Run tests using different approach: `docker-compose exec <container_name> "python manage.py test"`. (Container must be started) 
+  
 
 
 ## Check project functionality
