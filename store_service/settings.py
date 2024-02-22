@@ -206,11 +206,19 @@ LOGGING = {
             "level": LOG_LEVEL,
             "class": "logging.FileHandler",
             "filename": os.path.join(LOGGING_DIR, "app.log"),
+            "formatter": "verbose",
         },
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
             "stream": sys.stdout,
+            "formatter": "verbose",
+        },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s - %(asctime)s - %(name)s - %(message)s",
+            "datefmt": "%d-%m-%Y %H:%M:%S",
         },
     },
     "loggers": {
