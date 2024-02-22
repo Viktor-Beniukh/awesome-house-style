@@ -201,6 +201,9 @@ LOGGING_DIR = os.path.join(BASE_DIR, "logs")
 
 LOG_LEVEL = "INFO"
 
+if os.getenv("LOG_LEVEL") is not None:
+    LOG_LEVEL = os.getenv("LOG_LEVEL")
+
 if not os.path.exists(LOGGING_DIR):
     os.makedirs(LOGGING_DIR)
 

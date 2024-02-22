@@ -35,7 +35,7 @@ You need to create `.env.prod` file and add there the variables with your accord
 - `EMAIL_HOST`: this is smtp server;
 
 - `STRIPE_PUBLIC_KEY` & `STRIPE_SECRET_KEY`: your keys received after registration on the Stripe website;
-- `BASE_URL`: base url to redirect after successful order payment or cancellation of its payment
+- `BASE_URL`: base url to redirect after successful order payment or cancellation of its payment.
 
 
 To check functionality of the project without docker, you need to create directory `media`, and also to create
@@ -54,7 +54,7 @@ To check functionality of the project without docker, you need to create directo
 - `STRIPE_PUBLIC_KEY` & `STRIPE_SECRET_KEY`: your keys received after registration on the Stripe website;
 - `BASE_URL`: base url(localhost) to redirect after successful order payment or cancellation of its payment
 
-
+Optional: you can add a variable called `LOG_LEVEL` to `.env` and `.env.prod` files, if you want to change a level of logging
 
 ## Run with docker
 
