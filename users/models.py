@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -8,6 +9,8 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from phonenumber_field.modelfields import PhoneNumberField
+
+logger = logging.getLogger(__name__)
 
 
 def user_image_file_path(instance, filename):
@@ -25,6 +28,7 @@ class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         """Create and save a User with the given email and password."""
         if not email:
+            logger.error("The given email must be set")
             raise ValueError("The given email must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
@@ -44,8 +48,10 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_staff") is not True:
+            logger.error("Superuser must have is_staff=True.")
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
+            logger.error("Superuser must have is_superuser=True.")
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(email, password, **extra_fields)

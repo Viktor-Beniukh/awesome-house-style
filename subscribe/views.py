@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -8,6 +10,8 @@ from django.views.generic import TemplateView, CreateView
 
 from subscribe.forms import SubscribeForm
 from subscribe.models import Subscriber
+
+logger = logging.getLogger(__name__)
 
 
 class SubscribeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -27,6 +31,7 @@ class SubscribeView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         user = self.request.user
 
         if Subscriber.objects.filter(user=user).exists():
+            logger.info("You are already subscribed.")
             messages.info(self.request, "You are already subscribed.")
             return HttpResponseRedirect(self.success_url)
 
@@ -43,5 +48,7 @@ class UnsubscribeView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         user = request.user
         Subscriber.objects.filter(user=user).delete()
+
+        logger.info("You have been unsubscribed.")
         messages.success(request, "You have been unsubscribed.")
         return redirect(reverse_lazy("main:index"))

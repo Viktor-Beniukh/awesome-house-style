@@ -1,3 +1,4 @@
+import logging
 import stripe
 from django.conf import settings
 from django.contrib import messages
@@ -11,6 +12,8 @@ from django.views.decorators.http import require_http_methods
 from carts.models import Cart
 from orders.forms import CreateOrderForm
 from orders.models import Order, OrderItem
+
+logger = logging.getLogger(__name__)
 
 
 BASE_URL = settings.BASE_URL
@@ -47,6 +50,9 @@ def create_order_view(request):
                             quantity = cart_item.quantity
 
                             if product.quantity < quantity:
+                                logger.error(
+                                    f"Insufficient quantity of goods {name} in stock. Available - {product.quantity}"
+                                )
                                 raise ValidationError(
                                     f"Insufficient quantity of goods {name} in stock. Available - {product.quantity}"
                                 )
@@ -63,12 +69,15 @@ def create_order_view(request):
 
                         cart_items.delete()
 
+                        logger.info("Your order has been placed successfully!")
                         messages.success(request, "Your order has been placed successfully!")
                         return redirect("users:profile")
             except ValidationError as e:
+                logger.error(f"Error: {str(e)}")
                 messages.warning(request, str(e))
                 return redirect("cart:order")
         else:
+            logger.error("Please correct the errors in the order form.")
             messages.warning(request, "Please correct the errors in the form.")
     else:
         initial = {

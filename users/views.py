@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import auth, messages
 from django.contrib.auth import update_session_auth_hash, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -13,6 +15,8 @@ from django.utils.http import urlsafe_base64_decode
 from carts.models import Cart
 from orders.models import Order, OrderItem
 from users.forms import UserLoginForm, UserProfileForm, UserRegisterForm
+
+logger = logging.getLogger(__name__)
 
 
 def login_view(request):
@@ -35,6 +39,7 @@ def login_view(request):
                 if redirect_page and redirect_page != reverse("user:logout"):
                     return HttpResponseRedirect(request.POST.get("next"))
 
+                logger.info(f"Welcome {user.username} to our site")
                 messages.success(request, f"Welcome {user.username} to our site")
                 return HttpResponseRedirect(reverse("main:index"))
     else:
@@ -62,6 +67,7 @@ def register_view(request):
             if session_key:
                 Cart.objects.filter(session_key=session_key).update(user=user)
 
+            logger.info(f"{user.username}, You have successfully registered and logged in")
             messages.success(request, f"{user.username}, You have successfully registered and logged in")
             return HttpResponseRedirect(reverse("main:index"))
     else:
@@ -80,6 +86,8 @@ def profile_view(request):
         form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
         if form.is_valid():
             form.save()
+
+            logger.info("Profile successfully updated")
             messages.success(request, "Profile successfully updated")
             return HttpResponseRedirect(reverse("user:profile"))
     else:
@@ -109,6 +117,7 @@ def users_cart_view(request):
 
 @login_required
 def logout_view(request):
+    logger.info(f"{request.user.username}, You left your account")
     messages.success(request, f"{request.user.username}, You left your account")
     auth.logout(request)
     return redirect(reverse("main:index"))
@@ -123,6 +132,8 @@ def change_password_view(request, pk):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
+
+            logger.info("Password changed successfully.")
             messages.success(request, "Password changed successfully.")
 
             return redirect(reverse("user:password-success"))
@@ -158,6 +169,7 @@ def reset_password_view(request):
                 email_template_name="users/password_reset_email.html",
             )
 
+            logger.info("Message sent successfully.")
             messages.success(request, "Message sent successfully.")
             return redirect(reverse("user:password_reset_done"))
 
@@ -193,6 +205,7 @@ def reset_password_confirm_view(request, uidb64, token):
             if form.is_valid():
                 form.save()
 
+                logger.info("Password reset successfully.")
                 messages.success(request, "Password reset successfully.")
                 return redirect(reverse("user:password_reset_complete"))
         else:

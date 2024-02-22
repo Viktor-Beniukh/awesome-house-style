@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -12,6 +14,8 @@ from django.views.decorators.http import require_POST
 from goods.forms import CategoryForm, ProductForm, ReviewForm
 from goods.models import Product, FavoriteProduct, Rating
 from goods.utils import q_search
+
+logger = logging.getLogger(__name__)
 
 
 def catalog_view(request, category_slug: str = None):
@@ -60,6 +64,7 @@ def product_view(request, product_slug: str):
     try:
         product = Product.objects.get(slug=product_slug)
     except Product.DoesNotExist:
+        logger.error("Such Product not found. Error 404")
         raise Http404("Product not found")
 
     favorite_products = []
@@ -91,6 +96,8 @@ def category_create_view(request):
             form = CategoryForm(data=request.POST)
             if form.is_valid():
                 form.save()
+
+                logger.info("Category successfully created")
                 messages.success(request, "Category successfully created")
                 return HttpResponseRedirect(reverse("main:index"))
         else:
@@ -104,6 +111,7 @@ def category_create_view(request):
             request=request, template_name="goods/category_create.html", context=context
         )
     else:
+        logger.warning("You do not have permission to create categories.")
         messages.warning(request, "You do not have permission to create categories.")
         return HttpResponseRedirect(reverse("main:index"))
 
@@ -115,6 +123,8 @@ def product_create_view(request):
             form = ProductForm(data=request.POST)
             if form.is_valid():
                 form.save()
+
+                logger.info("Product successfully created")
                 messages.success(request, "Product successfully created")
                 return HttpResponseRedirect(reverse("main:index"))
         else:
@@ -128,6 +138,7 @@ def product_create_view(request):
             request=request, template_name="goods/product_create.html", context=context
         )
     else:
+        logger.warning("You do not have permission to create products.")
         messages.warning(request, "You do not have permission to create products.")
         return HttpResponseRedirect(reverse("main:index"))
 
@@ -141,6 +152,8 @@ def product_update_view(request, product_slug: str):
             form = ProductForm(request.POST, instance=product)
             if form.is_valid():
                 form.save()
+
+                logger.info("Product successfully updated")
                 messages.success(request, "Product successfully updated")
                 return HttpResponseRedirect(product.get_absolute_url())
         else:
@@ -154,6 +167,7 @@ def product_update_view(request, product_slug: str):
             request=request, template_name="goods/product_update.html", context=context
         )
     else:
+        logger.warning("You do not have permission to update products.")
         messages.warning(request, "You do not have permission to update products.")
         return HttpResponseRedirect(product.get_absolute_url())
 
@@ -165,6 +179,8 @@ def product_delete_view(request, product_slug: str):
     if is_admin(request.user):
         if request.method == "POST":
             product.delete()
+
+            logger.info("Product successfully removed")
             messages.success(request, "Product successfully removed")
             return HttpResponseRedirect(reverse("main:index"))
 
@@ -176,6 +192,7 @@ def product_delete_view(request, product_slug: str):
             request=request, template_name="goods/product_confirm_delete.html", context=context
         )
     else:
+        logger.warning("You do not have permission to remove products.")
         messages.warning(request, "You do not have permission to remove products.")
         return HttpResponseRedirect(product.get_absolute_url())
 
@@ -196,8 +213,11 @@ def create_review(request, product_id: int):
         review.user = request.user
         review.product = product
         review.save()
+
+        logger.info("Review successfully added.")
         messages.success(request, "Review successfully added.")
     else:
+        logger.warning("Failed to add the review. Please check the form.")
         messages.warning(request, "Failed to add the review. Please check the form.")
 
     return redirect(product.get_absolute_url())
@@ -228,6 +248,7 @@ def toggle_favorite_view(request):
         product_id = request.POST.get("product_id")
 
         if not product_id or not product_id.isdigit():
+            logger.error("Invalid product_id to choose favorite product")
             return JsonResponse({"error": "Invalid product_id"}, status=400)
 
         user = request.user
@@ -237,6 +258,8 @@ def toggle_favorite_view(request):
             favorite_product.delete()
             is_favorite = False
         except FavoriteProduct.DoesNotExist:
+            logger.error("Favorite product not found")
+
             FavoriteProduct.objects.create(user=user, product_id=product_id)
             is_favorite = True
 
@@ -244,6 +267,7 @@ def toggle_favorite_view(request):
 
         return JsonResponse({"is_favorite": is_favorite, "favorites_count": favorites_count})
     else:
+        logger.error("Method not allowed for toggle favorite")
         return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
@@ -269,8 +293,11 @@ def add_rating_view(request, product_id):
 
             return JsonResponse({"success": True, "average_rating": average_rating})
         except Product.DoesNotExist:
+            logger.error("Product not found to evaluate it")
             return JsonResponse({"success": False, "error": "Product not found"}, status=404)
         except Exception as e:
+            logger.exception(f"An unexpected error occurred: {str(e)}")
             return JsonResponse({"success": False, "error": str(e)}, status=500)
     else:
+        logger.error("Invalid request method to add rating")
         return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
