@@ -91,7 +91,9 @@ Docker should be installed
 
 ## Testing
 
-- Run tests using different approach: `docker-compose exec <container_name> "python manage.py test"`. (Container must be started) 
+Container must be started
+
+- Run tests using different approach: `docker-compose exec <container_name> "python manage.py test"`.
   
 
 
