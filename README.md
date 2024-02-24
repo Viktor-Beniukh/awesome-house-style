@@ -17,6 +17,7 @@ poetry install
 python manage.py migrate
 python manage.py runserver   
 ```
+You need to create directory `media` and you also need to add to this directory default image `default.jpg` (need for tests).
 
 You need to create `.env.prod` file and add there the variables with your according values:
 - `POSTGRES_DB`: this is databases name;
@@ -38,8 +39,7 @@ You need to create `.env.prod` file and add there the variables with your accord
 - `BASE_URL`: base url to redirect after successful order payment or cancellation of its payment.
 
 
-To check functionality of the project without docker, you need to create directory `media`, and also to create
-`.env` file and add there the variables with your according values:
+To check functionality of the project without docker, you need to create `.env` file and add there the variables with your according values:
 
 - `SECRET_KEY`: this is Django Secret Key - by default is set automatically when you create a Django project.
                 You can generate a new key, if you want, by following the link: `https://djecrety.ir`;
