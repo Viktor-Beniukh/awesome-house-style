@@ -17,7 +17,8 @@ poetry install
 python manage.py migrate
 python manage.py runserver   
 ```
-You need to create directory `media` and you also need to add to this directory default image `default.jpg` (need for tests).
+You need to create directory `media` and you also need to add to this directory default user image `default.jpg` (need for tests).
+The first category in the category table of a database should be `All goods`
 
 You need to create `.env.prod` file and add there the variables with your according values:
 - `POSTGRES_DB`: this is databases name;
